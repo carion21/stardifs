@@ -4,6 +4,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from zipfile import ZipFile
+import os
 
 
 from utils import *
@@ -33,13 +34,14 @@ if fichier is not None:
     fpzip = "./zips/"+fnzip
     datazip = ZipFile(fpzip, 'w')
 
-    for nbranche in nbranches[:2]:  
+    for nbranche in nbranches:  
         st.write("==================================================")
         st.write("BRANCHE {} EN COURS DE TRAITEMENT".format(nbranche))
         dob = data[data["BRANCHE"] == nbranche]
         st.write("BRANCHE {} TRAITÉE AVEC SUCCÈS".format(nbranche))
         fp, fn = traitementv4(dob)
         datazip.write(fp)
+        os.remove(fp)
         st.write("--------------------------------------------------")
     datazip.close()
 
@@ -47,7 +49,7 @@ if fichier is not None:
         bytes = f.read()
         b64 = base64.b64encode(bytes).decode()
         href = f'<a href="data:file/zip;base64,{b64}" download=\'{fnzip}\'>\
-                JE PROCÈDE AU TÉLÉCHARGeMENT\
+                JE PROCÈDE AU TÉLÉCHARGEMENT\
             </a>'
         st.sidebar.markdown(href, unsafe_allow_html=True)
     
